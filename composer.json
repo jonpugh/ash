@@ -1,6 +1,6 @@
 {
     "name": "jonpugh/ash",
-    "description": "Alias Shell",
+    "description": "Global CLI for managing sites using Consolidation Site Aliases.",
     "require": {
         "consolidation/site-alias": "4.x-dev",
         "consolidation/robo": "4.x-dev",

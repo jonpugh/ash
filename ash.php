@@ -55,10 +55,10 @@ if (!$loader) {
 $argv = $_SERVER['argv'];
 $appName = "Alias Shell";
 $appVersion = trim(file_get_contents(__DIR__ . '/VERSION'));
-$commandClasses = [ \Consolidation\SiteAlias\Cli\SiteAliasCommands::class ];
-$selfUpdateRepository = 'consolidation/site-alias';
-$configPrefix = 'SITEALIAS';
-$configFilePath = getenv($configPrefix . '_CONFIG') ?: getenv('HOME') . '/.site-alias/site-alias.yml';
+$commandClasses = [ \JonPugh\Ash\Cli\AshCommands::class ];
+$selfUpdateRepository = 'jonpugh/ash';
+$configPrefix = 'ASH';
+$configFilePath = getenv($configPrefix . '_CONFIG') ?: getenv('HOME') . '/.ash/sites.yml';
 
 // Define our Runner, and pass it the command classes we provide.
 $runner = new \Robo\Runner($commandClasses);

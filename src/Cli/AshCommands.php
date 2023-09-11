@@ -12,51 +12,60 @@ class AshCommands extends \Robo\Tasks
 {
     protected $aliasLoader;
 
+    protected $aliases;
+
+    protected $aliasName;
+
+    protected $config;
+
+    public function __construct() {
+        $this->config = \Robo\Robo::Config()->get('ash');
+
+        $this->aliasLoader = new SiteAliasFileLoader();
+        $ymlLoader = new YamlDataFileLoader();
+        $this->aliasLoader->addLoader('yml', $ymlLoader);
+        // Parse environment vars
+        $aliasName = $this->getLocationsAndAliasName($this->config['alias_directories']);
+        $this->manager = new SiteAliasManager($this->aliasLoader);
+        $this->aliases = $this->manager->getMultiple($aliasName);
+
+    }
+
     /**
      * List available site aliases.
      *
      * @command site:list
      * @format yaml
      * @return array
+     * @aliases sl ls
      */
     public function siteList()
     {
-        $config = \Robo\Robo::Config()->get('ash');
-
-        $this->aliasLoader = new SiteAliasFileLoader();
-        $ymlLoader = new YamlDataFileLoader();
-        $this->aliasLoader->addLoader('yml', $ymlLoader);
-
-        // Parse environment vars
-        $aliasName = $this->getLocationsAndAliasName($config['alias_directories']);
-
-        $this->manager = new SiteAliasManager($this->aliasLoader);
-
-        return $this->renderAliases($this->manager->getMultiple($aliasName));
+        return $this->renderAliases($this->aliases);
     }
-
-    /**
-     * Load available site aliases.
-     *
-     * @command site:load
-     * @format yaml
-     * @return array
-     */
-    public function siteLoad(array $dirs)
-    {
-        $this->aliasLoader = new SiteAliasFileLoader();
-        $ymlLoader = new YamlDataFileLoader();
-        $this->aliasLoader->addLoader('yml', $ymlLoader);
-
-        foreach ($dirs as $dir) {
-            $this->io()->note("Add search location: $dir");
-            $this->aliasLoader->addSearchLocation($dir);
-        }
-
-        $all = $this->aliasLoader->loadAll();
-
-        return $this->renderAliases($all);
-    }
+//
+//    /**
+//     * Load available site aliases.
+//     *
+//     * @command site:load
+//     * @format yaml
+//     * @return array
+//     */
+//    public function siteLoad(array $dirs)
+//    {
+//        $this->aliasLoader = new SiteAliasFileLoader();
+//        $ymlLoader = new YamlDataFileLoader();
+//        $this->aliasLoader->addLoader('yml', $ymlLoader);
+//
+//        foreach ($dirs as $dir) {
+//            $this->io()->note("Add search location: $dir");
+//            $this->aliasLoader->addSearchLocation($dir);
+//        }
+//
+//        $all = $this->aliasLoader->loadAll();
+//
+//        return $this->renderAliases($all);
+//    }
 
     protected function getLocationsAndAliasName($varArgs)
     {
@@ -84,7 +93,6 @@ class AshCommands extends \Robo\Tasks
         foreach ($all as $name => $alias) {
             $result[$name] = $alias->export();
         }
-
         return $result;
     }
 
@@ -95,19 +103,12 @@ class AshCommands extends \Robo\Tasks
      * @format yaml
      * @return array
      */
-    public function siteGet(array $varArgs)
+    public function siteGet($aliasName)
     {
-        $this->aliasLoader = new SiteAliasFileLoader();
-        $ymlLoader = new YamlDataFileLoader();
-        $this->aliasLoader->addLoader('yml', $ymlLoader);
-        $aliasName = $this->getLocationsAndAliasName($varArgs, $this->aliasLoader);
-
-        $manager = new SiteAliasManager($this->aliasLoader);
-        $result = $manager->get($aliasName);
+        $result = $this->manager->get($aliasName);
         if (!$result) {
             throw new \Exception("No alias found");
         }
-
         return $result->export();
     }
 
@@ -118,20 +119,15 @@ class AshCommands extends \Robo\Tasks
      * @format yaml
      * @return string
      */
-    public function siteValue(array $varArgs)
+    public function siteValue($aliasName, $key)
     {
-        $this->aliasLoader = new SiteAliasFileLoader();
-        $ymlLoader = new YamlDataFileLoader();
-        $this->aliasLoader->addLoader('yml', $ymlLoader);
-        $key = array_pop($varArgs);
-        $aliasName = $this->getLocationsAndAliasName($varArgs, $this->aliasLoader);
-
-        $manager = new SiteAliasManager($this->aliasLoader);
-        $result = $manager->get($aliasName);
+        $result = $this->manager->get($aliasName);
         if (!$result) {
             throw new \Exception("No alias found");
         }
-
+        if (!$result->get($key)) {
+            throw new \Exception("Key $key was not found in alias $aliasName.");
+        }
         return $result->get($key);
     }
 

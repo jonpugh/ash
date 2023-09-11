@@ -8,6 +8,18 @@ This project is a global cli designed to run commands against multiple sites usi
 
 This is a possible replacement for global Drush.
 
+## Commands
+
+```
+site
+site:exec        [e] Run a command against a site (in the root directory.)
+site:get         [get] Show contents of a single site alias.
+site:list        [sl|ls] List available site aliases.
+site:value       Access a value from a single alias.
+site-spec
+site-spec:parse  Parse a site specification.
+```
+
 ## History
 
 This tool was built from the ashes of a small tool created by the `consolidation/site-alias` team called [alias-tool](https://github.com/consolidation/site-alias/blob/3.0.1/alias-tool).
@@ -16,9 +28,25 @@ It was inspired by the need to retire global drush.
 
 ## Installation
 
-This is a global CLI. It will be installable via composer global-require and a phar file.
+This is a global CLI. It will have a phar file in the future but for now, you can install one of 2 ways:
 
-Once it's available on packagist, I'll update instructions here.
+1. Global Require.
+
+    ```
+    composer global require jonpugh/ash
+    ```
+   Then add COMPOSER_HOME to your path.
+
+    ```
+    export PATH="$HOME/.config/composer:$PATH"
+    ```
+
+2. Source install.
+
+    ```
+    git clone git@github.com:jonpugh/ash.git
+    sudo ln -s $PWD/ash /usr/local/bin/ash
+    ```
 
 ## Configuration
 
@@ -38,17 +66,6 @@ Remember to name the files `$APP.site.yml` instead of `self.site.yml`
 See Drush [Site Alias Documentation](https://www.drush.org/12.x/site-aliases/) for details on how to create alias files.
 
 
-## Commands
-
-```
-site
-site:exec        [e] Run a command against a site (in the root directory.)
-site:get         [get] Show contents of a single site alias.
-site:list        [sl|ls] List available site aliases.
-site:value       Access a value from a single alias.
-site-spec
-site-spec:parse  Parse a site specification.
-```
 ## Usage
 
 Given you have added the example file [examples/operations.site.yml](./examples/operations.site.yml) to `$HOME/.ash/operations.site.yml`, you can run the following commands:

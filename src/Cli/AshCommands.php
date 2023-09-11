@@ -25,6 +25,11 @@ class AshCommands extends \Robo\Tasks
         $this->aliasLoader = new SiteAliasFileLoader();
         $ymlLoader = new YamlDataFileLoader();
         $this->aliasLoader->addLoader('yml', $ymlLoader);
+
+        // Load local site aliases.
+        $cwd = isset($_SERVER['PWD']) && is_dir($_SERVER['PWD']) ? $_SERVER['PWD'] : getcwd();
+        $this->aliasLoader->addSearchLocation($cwd .'/drush/sites');
+
         // Parse environment vars
         $aliasName = $this->getLocationsAndAliasName($this->config['alias_directories']);
         $this->manager = new SiteAliasManager($this->aliasLoader);
@@ -33,7 +38,7 @@ class AshCommands extends \Robo\Tasks
     }
 
     /**
-     * List available site aliases.
+     * Run a command against a site (in the root directory.)
      *
      * @command site:exec
      * @format yaml
@@ -125,6 +130,7 @@ class AshCommands extends \Robo\Tasks
      * Show contents of a single site alias.
      *
      * @command site:get
+     * @aliases get
      * @format yaml
      * @return array
      */

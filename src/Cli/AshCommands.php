@@ -43,11 +43,15 @@ class AshCommands extends \Robo\Tasks
      * @command site:exec
      * @format yaml
      * @return array
-     * @aliases e
+     * @aliases e exec ex
      */
     public function siteExec($alias_name, array $command_array)
     {
         $site_alias = $this->manager->getAlias($alias_name);
+        if (empty($site_alias)) {
+            throw new \Exception("No aliases found");
+        }
+
         $processManager = ProcessManager::createDefault();
         $process = $processManager->siteProcess($site_alias, $command_array);
         $process->setWorkingDirectory($site_alias->root());

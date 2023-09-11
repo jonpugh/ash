@@ -1,0 +1,8 @@
+local:
+  root: ${env.HOME}/Work/Operations/operations/web
+  uri: https://operations.lndo.site
+
+mars:
+  root: ${env.HOME}/Work/Operations/operations/web
+  uri: https://mars.lndo.site
+

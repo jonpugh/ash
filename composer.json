@@ -2,7 +2,8 @@
     "name": "jonpugh/ash",
     "description": "Alias Shell",
     "require": {
-        "consolidation/site-alias": "4.x-dev"
+        "consolidation/site-alias": "4.x-dev",
+        "consolidation/robo": "4.x-dev"
     },
     "license": "MIT",
     "autoload": {
@@ -16,5 +17,6 @@
             "email": "jon@thinkdrop.net"
         }
     ],
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "bin": ["ash"]
 }

@@ -1,6 +1,6 @@
 # Ash: Site Alias Shell
 
-A global CLI to list sites and run commands on them.
+A global CLI to list sites and run commands on them. Very similar to global `drush site:alias` command. 
 
 ## Overview
 

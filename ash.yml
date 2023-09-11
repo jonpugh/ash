@@ -3,3 +3,6 @@
 ash:
   alias_directories:
     - "${env.HOME}/.ash"
+
+    # To include a project's site aliases when calling `ash` globally, add the path to drush/sites here.
+    # - "${env.HOME}/projects/drupal"

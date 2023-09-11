@@ -58,7 +58,16 @@ $appVersion = trim(file_get_contents(__DIR__ . '/VERSION'));
 $commandClasses = [ \JonPugh\Ash\Cli\AshCommands::class ];
 $selfUpdateRepository = 'jonpugh/ash';
 $configPrefix = 'ASH';
-$configFilePath = getenv($configPrefix . '_CONFIG') ?: getenv('HOME') . '/.ash/sites.yml';
+$configCandidates = [
+    getenv($configPrefix . '_CONFIG') ?: getenv('HOME') . '/.ash/ash.yml',
+    __DIR__ . '/ash.yml',
+];
+foreach ($configCandidates as $candidate) {
+    if (file_exists($candidate)) {
+        $configFilePath = $candidate;
+        break;
+    }
+}
 
 // Define our Runner, and pass it the command classes we provide.
 $runner = new \Robo\Runner($commandClasses);

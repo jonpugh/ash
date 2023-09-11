@@ -1,0 +1,3 @@
+ash:
+  alias_directories:
+    - "${HOME}/.ash"

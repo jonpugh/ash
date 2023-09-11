@@ -19,12 +19,16 @@ class AshCommands extends \Robo\Tasks
      * @format yaml
      * @return array
      */
-    public function siteList(array $varArgs)
+    public function siteList()
     {
+        $config = \Robo\Robo::Config()->get('ash');
+
         $this->aliasLoader = new SiteAliasFileLoader();
         $ymlLoader = new YamlDataFileLoader();
         $this->aliasLoader->addLoader('yml', $ymlLoader);
-        $aliasName = $this->getLocationsAndAliasName($varArgs, $this->aliasLoader);
+
+        // Parse environment vars
+        $aliasName = $this->getLocationsAndAliasName($config['alias_directories']);
 
         $this->manager = new SiteAliasManager($this->aliasLoader);
 
@@ -62,8 +66,9 @@ class AshCommands extends \Robo\Tasks
                 $this->io()->note("Alias parameter: '$arg'");
                 $aliasName = $arg;
             } else {
-                $this->io()->note("Add search location: $arg");
-                $this->aliasLoader->addSearchLocation($arg);
+                $dir = exec("echo $arg");
+                $this->io()->note("Add search location: $dir");
+                $this->aliasLoader->addSearchLocation($dir);
             }
         }
         return $aliasName;

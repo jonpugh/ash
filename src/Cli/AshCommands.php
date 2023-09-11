@@ -7,6 +7,7 @@ use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteAlias\Util\YamlDataFileLoader;
 use Consolidation\SiteAlias\SiteSpecParser;
 use Consolidation\SiteAlias\SiteAliasName;
+use Consolidation\SiteProcess\ProcessManager;
 
 class AshCommands extends \Robo\Tasks
 {
@@ -29,6 +30,30 @@ class AshCommands extends \Robo\Tasks
         $this->manager = new SiteAliasManager($this->aliasLoader);
         $this->aliases = $this->manager->getMultiple($aliasName);
 
+    }
+
+    /**
+     * List available site aliases.
+     *
+     * @command site:exec
+     * @format yaml
+     * @return array
+     * @aliases e
+     */
+    public function siteExec($alias_name, array $command_array)
+    {
+        $site_alias = $this->manager->getAlias($alias_name);
+        $processManager = ProcessManager::createDefault();
+        $process = $processManager->siteProcess($site_alias, $command_array);
+        $process->setWorkingDirectory($site_alias->root());
+
+        // @TODO: Would it be kosher to try and detect bin-path?
+        // That way users could `ash @alias drush` or any other bin.
+
+        $process->mustRun(function ($type, $buffer): void {
+            echo $buffer;
+        });
+        return $process->getExitCode();
     }
 
     /**

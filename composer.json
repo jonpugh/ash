@@ -3,7 +3,8 @@
     "description": "Alias Shell",
     "require": {
         "consolidation/site-alias": "4.x-dev",
-        "consolidation/robo": "4.x-dev"
+        "consolidation/robo": "4.x-dev",
+        "consolidation/site-process": "^5.0@dev"
     },
     "license": "MIT",
     "autoload": {

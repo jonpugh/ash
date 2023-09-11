@@ -1,0 +1,20 @@
+{
+    "name": "jonpugh/ash",
+    "description": "Alias Shell",
+    "require": {
+        "consolidation/site-alias": "4.x-dev"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "JonPugh\\Ash\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jon Pugh",
+            "email": "jon@thinkdrop.net"
+        }
+    ],
+    "minimum-stability": "dev"
+}

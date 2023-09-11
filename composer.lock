@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ba25cae42fd86181e225289f109d83dd",
+    "content-hash": "8e7bf27f6aa788f6e56d60b6f4b038b3",
     "packages": [
         {
             "name": "composer/semver",
@@ -316,16 +316,16 @@
         },
         {
             "name": "consolidation/robo",
-            "version": "4.x-dev",
+            "version": "4.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/robo.git",
-                "reference": "013af6c52469541720393d88f2dc6d417419e75a"
+                "reference": "55a272370940607649e5c46eb173c5c54f7c166d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/robo/zipball/013af6c52469541720393d88f2dc6d417419e75a",
-                "reference": "013af6c52469541720393d88f2dc6d417419e75a",
+                "url": "https://api.github.com/repos/consolidation/robo/zipball/55a272370940607649e5c46eb173c5c54f7c166d",
+                "reference": "55a272370940607649e5c46eb173c5c54f7c166d",
                 "shasum": ""
             },
             "require": {
@@ -361,7 +361,6 @@
                 "pear/archive_tar": "Allows tar archives to be created and extracted in taskPack and taskExtract, respectively.",
                 "totten/lurkerlite": "For monitoring filesystem changes in taskWatch"
             },
-            "default-branch": true,
             "bin": [
                 "robo"
             ],
@@ -384,9 +383,9 @@
             "description": "Modern task runner",
             "support": {
                 "issues": "https://github.com/consolidation/robo/issues",
-                "source": "https://github.com/consolidation/robo/tree/4.x"
+                "source": "https://github.com/consolidation/robo/tree/4.0.6"
             },
-            "time": "2023-04-30T21:50:02+00:00"
+            "time": "2023-04-30T21:49:04+00:00"
         },
         {
             "name": "consolidation/self-update",
@@ -446,7 +445,7 @@
         },
         {
             "name": "consolidation/site-alias",
-            "version": "dev-main",
+            "version": "4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-alias.git",
@@ -471,7 +470,6 @@
                 "symfony/var-dumper": "^4",
                 "yoast/phpunit-polyfills": "^0.2.0"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -506,7 +504,7 @@
         },
         {
             "name": "consolidation/site-process",
-            "version": "dev-main",
+            "version": "5.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-process.git",
@@ -529,7 +527,6 @@
                 "phpunit/phpunit": "^9",
                 "squizlabs/php_codesniffer": "^3"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -2250,11 +2247,8 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "consolidation/site-alias": 20,
-        "consolidation/robo": 20
-    },
-    "prefer-stable": false,
+    "stability-flags": [],
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],

@@ -2,4 +2,4 @@
 # Copy this file to ~/.ash/ash.yml if overriding is needed.
 ash:
   alias_directories:
-    - "${HOME}/.ash"
+    - "${env.HOME}/.ash"

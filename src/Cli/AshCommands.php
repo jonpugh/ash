@@ -100,7 +100,7 @@ class AshCommands extends \Robo\Tasks
                 $this->io()->note("Alias parameter: '$arg'");
                 $aliasName = $arg;
             } else {
-                $dir = exec("echo $arg");
+                $dir = $arg;
                 $this->io()->note("Add search location: $dir");
                 $this->aliasLoader->addSearchLocation($dir);
             }

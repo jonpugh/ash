@@ -79,6 +79,18 @@ $runner
 
 // Execute the command and return the result.
 $output = new \Symfony\Component\Console\Output\ConsoleOutput();
+
+// Detect alias and push args.
+if (!empty($argv[1]) && strpos($argv[1], '@') === 0) {
+  $argv_new = [
+    $argv[0],
+    'site:exec',
+    $argv[1],
+  ];
+  $argv_slice = array_slice($argv, 2);
+  $argv = array_merge($argv_new, $argv_slice);
+}
+
 $statusCode = $runner->execute($argv, $appName, $appVersion, $output);
 exit($statusCode);
 

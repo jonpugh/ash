@@ -210,7 +210,7 @@ class AshCommands extends \Robo\Tasks
             $name = $this->io()->ask('Name?', strtr(basename(getcwd()), ['.' => '']));
 
             $alias_data = new SiteAlias();
-            $alias_data->set('root', $aliases_dir);
+            $alias_data->set('root', getcwd());
             $alias_contents = Yaml::dump(['default' => $alias_data->export()]);
 
             $this->io->table(['Name', 'Contents'], [

@@ -39,12 +39,17 @@ class AshCommands extends \Robo\Tasks
     }
 
     /**
-     * Run a command against a site (in the root directory.)
+     * Run a command against a site (in the root directory and on the right server.)
+     * You can use the alternative syntax: ash @alias command.
      *
      * @command site:exec
      * @format yaml
      * @return array
-     * @aliases e exec ex
+     *
+     * @usage @site.local git status
+     * @usage @site.local vendor/bin/drush user:login
+     * @usage @site.local vendor/bin/drush @prod cr     # Calls `drush @prod cr` in the site root (where site local site aliases would be available.)
+     * @usage -- ls -la  # To pass a command with dashes, use -- to separate ash command from site command.
      */
     public function siteExec($alias_name, array $command_array)
     {

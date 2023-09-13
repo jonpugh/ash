@@ -48,6 +48,18 @@ This is a global CLI. It will have a phar file in the future but for now, you ca
     sudo ln -s $PWD/ash /usr/local/bin/ash
     ```
 
+## Setup
+
+Once the `ash` command works, you need to tell it where your sites are. You can create alias files manually, or use the `site:add` command.
+
+### `ash site:add`
+
+This command makes it easy to add new global site aliases.
+
+To use, run `ash site:add` in the directory to your Drupal site. (@todo: allow adding from any directory)
+
+If your site has the file `./drush/sites/self.yml`, these aliases will be included in the global alias list.
+
 ## Configuration
 
 See [ash.yml](ash.yml) for default config:

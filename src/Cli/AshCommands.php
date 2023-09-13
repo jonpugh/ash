@@ -9,6 +9,8 @@ use Consolidation\SiteAlias\Util\YamlDataFileLoader;
 use Consolidation\SiteAlias\SiteSpecParser;
 use Consolidation\SiteAlias\SiteAliasName;
 use Consolidation\SiteProcess\ProcessManager;
+use Symfony\Component\Translation\Dumper\YamlFileDumper;
+use Symfony\Component\Yaml\Yaml;
 
 class AshCommands extends \Robo\Tasks
 {
@@ -192,5 +194,44 @@ class AshCommands extends \Robo\Tasks
     {
         $parser = new SiteSpecParser();
         return $parser->parse($spec, $options['root']);
+    }
+
+    /**
+     * Add aliases to local config.
+     * @return void
+     * @aliases add
+     */
+    public function siteAdd() {
+        // If drush/sites was found, offer to add it to inventory.
+        $aliases_dir = getcwd() . '/drush/sites';
+        if (file_exists($aliases_dir)) {
+            $this->io()->info("Site aliases found in $aliases_dir.");
+            $name = $this->io()->ask('Name?', strtr(basename(getcwd()), ['.' => '']));
+
+            $alias_data = new SiteAlias();
+            $alias_data->set('root', $aliases_dir);
+            $alias_contents = Yaml::dump(['default' => $alias_data->export()]);
+
+            $this->io->table(['Name', 'Contents'], [
+                [$name, $alias_contents]
+            ]);
+
+            $alias_dirs = $this->config['alias_directories'];
+            $choice = [];
+            foreach ($alias_dirs as $dir) {
+                $choice[] = "{$dir}/{$name}.site.yml";
+            }
+
+            $filename = $this->io()->choice('Write new alias file?', $choice, 0);
+
+            if (file_exists($filename)) {
+                $this->io()->warning("File exists at path $filename.");
+                $this->io()->confirm('Overwrite?');
+            }
+            file_put_contents($filename, $alias_contents);
+
+            $this->io()->success("Alias file written to $filename. Call 'ash @$name' to access the site");
+
+       }
     }
 }

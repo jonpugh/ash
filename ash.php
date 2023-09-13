@@ -80,15 +80,50 @@ $runner
 // Execute the command and return the result.
 $output = new \Symfony\Component\Console\Output\ConsoleOutput();
 
-// Detect alias and push args.
-if (!empty($argv[1]) && strpos($argv[1], '@') === 0) {
-  $argv_new = [
-    $argv[0],
-    'site:exec',
-    $argv[1],
-  ];
-  $argv_slice = array_slice($argv, 2);
-  $argv = array_merge($argv_new, $argv_slice);
+// Detect running as "drush".
+// A symlink from 'drush' to 'ash' allows traditional global drush behavior.
+// $argv[0] is whatever full string was used to call it.
+// Could be a full path. Could be ./drush
+// So just check that the end of the command is "drush"
+if (str_ends_with($argv[0], 'drush')) {
+  if (!empty($argv[1]) && strpos($argv[1], '@') === 0) {
+    // "drush @alias x"
+
+    $alias = $argv[1];
+    $argv_new = [
+      __DIR__ . '/ash',
+      'site:exec',
+      $alias,
+      # @TODO: How to set path?
+      'bin/drush'
+    ];
+    $argv_slice = array_slice($argv, 2);
+    $argv = array_merge($argv_new, $argv_slice);
+  }
+  else {
+    // "drush x"
+    $argv_new = [
+      __DIR__ . '/ash',
+      'site:exec',
+      # @TODO: How to set path?
+      'bin/drush'
+    ];
+    $argv_slice = array_slice($argv, 1);
+    $argv = array_merge($argv_new, $argv_slice);
+  }
+}
+else {
+
+  // Detect alias and push args.
+  if (!empty($argv[1]) && strpos($argv[1], '@') === 0) {
+    $argv_new = [
+      $argv[0],
+      'site:exec',
+      $argv[1],
+    ];
+    $argv_slice = array_slice($argv, 2);
+    $argv = array_merge($argv_new, $argv_slice);
+  }
 }
 
 $statusCode = $runner->execute($argv, $appName, $appVersion, $output);

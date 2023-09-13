@@ -53,6 +53,11 @@ class AshCommands extends \Robo\Tasks
             throw new \Exception("No aliases found");
         }
 
+        // Set the drush URI to the site alias uri.
+        $site_alias->set('env-vars', [
+           'DRUSH_OPTIONS_URI' => $site_alias->uri(),
+        ]);
+
         $processManager = ProcessManager::createDefault();
         $process = $processManager->siteProcess($site_alias, $command_array);
         $process->setWorkingDirectory($site_alias->root());

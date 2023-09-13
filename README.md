@@ -20,6 +20,13 @@ site-spec
 site-spec:parse  Parse a site specification.
 ```
 
+## Alias syntax
+
+For simpler access to the `site:exec` command, you can use the alias syntax:
+
+        ash @alias command-to-execute
+
+
 ## History
 
 This tool was built from the ashes of a small tool created by the `consolidation/site-alias` team called [alias-tool](https://github.com/consolidation/site-alias/blob/3.0.1/alias-tool).

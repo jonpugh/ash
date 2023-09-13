@@ -55,6 +55,11 @@ class AshCommands extends \Robo\Tasks
      */
     public function siteExec($alias_name, array $command_array)
     {
+        if ($this->io()->isVerbose()) {
+            $this->io()->table(['Alias', 'Command'], [
+                [$alias_name, implode(' ', $command_array)]
+            ]);
+        }
         $site_alias = $this->manager->getAlias($alias_name);
         if (empty($site_alias)) {
             throw new \Exception("No aliases found");
@@ -233,6 +238,9 @@ class AshCommands extends \Robo\Tasks
 
             $this->io()->success("Alias file written to $filename. Call 'ash @$name' to access the site");
 
+       }
+       else {
+           throw new \Exception('No drush/sites folder found. Run "ash site:add" in the root of the site.');
        }
     }
 }

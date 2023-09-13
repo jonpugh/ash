@@ -94,8 +94,8 @@ if (str_ends_with($argv[0], 'drush')) {
       __DIR__ . '/ash',
       'site:exec',
       $alias,
-      # @TODO: How to set path?
-      'bin/drush'
+      # Assume PATH has been set to composer bin.
+      'drush'
     ];
     $argv_slice = array_slice($argv, 2);
     $argv = array_merge($argv_new, $argv_slice);
@@ -105,8 +105,8 @@ if (str_ends_with($argv[0], 'drush')) {
     $argv_new = [
       __DIR__ . '/ash',
       'site:exec',
-      # @TODO: How to set path?
-      'bin/drush'
+      # Assume PATH has been set to composer bin.
+      'drush'
     ];
     $argv_slice = array_slice($argv, 1);
     $argv = array_merge($argv_new, $argv_slice);

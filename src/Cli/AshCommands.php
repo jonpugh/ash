@@ -63,6 +63,7 @@ class AshCommands extends \Robo\Tasks
         // Set the drush URI to the site alias uri.
         $site_alias->set('env-vars', [
            'DRUSH_OPTIONS_URI' => $site_alias->uri(),
+           'PATH' => './vendor/bin:./bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:',
         ]);
 
         $processManager = ProcessManager::createDefault();

@@ -2,6 +2,7 @@
 
 namespace JonPugh\Ash\Cli;
 
+use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasFileLoader;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteAlias\Util\YamlDataFileLoader;
@@ -117,17 +118,21 @@ class AshCommands extends \Robo\Tasks
         return $aliasName;
     }
 
-    protected function renderAliases($all)
+    /**
+     * @param SiteAlias[] $all An array of aliases to display.
+     */
+    protected function renderAliases(array $all)
     {
         if (empty($all)) {
             throw new \Exception("No aliases found");
         }
 
-        $result = [];
+        $rows = [];
         foreach ($all as $name => $alias) {
-            $result[$name] = $alias->export();
+            $rows[] = [$alias->name(), $alias->root(), $alias->remoteHostWithUser()];
         }
-        return $result;
+
+        $this->io()->table(['Name', 'Root', 'Host'], $rows);
     }
 
     /**

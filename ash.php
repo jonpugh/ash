@@ -55,7 +55,7 @@ if (!$loader) {
 $argv = $_SERVER['argv'];
 $appName = "Alias Shell";
 $appVersion = trim(file_get_contents(__DIR__ . '/VERSION'));
-$commandClasses = [ \JonPugh\Ash\Cli\AshCommands::class ];
+$commandClasses = [ \Ash\Cli\AshCommands::class ];
 $selfUpdateRepository = 'jonpugh/ash';
 $configPrefix = 'ASH';
 $configCandidates = [

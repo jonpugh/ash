@@ -1,6 +1,6 @@
 <?php
 
-namespace JonPugh\Ash\Cli;
+namespace Ash\Cli;
 
 use Consolidation\SiteAlias\SiteAliasFileLoader;
 use Consolidation\SiteAlias\SiteAliasManager;

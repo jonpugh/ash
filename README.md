@@ -20,6 +20,13 @@ site-spec
 site-spec:parse  Parse a site specification.
 ```
 
+## Alias syntax
+
+For simpler access to the `site:exec` command, you can use the alias syntax:
+
+        ash @alias command-to-execute
+
+
 ## History
 
 This tool was built from the ashes of a small tool created by the `consolidation/site-alias` team called [alias-tool](https://github.com/consolidation/site-alias/blob/3.0.1/alias-tool).
@@ -47,6 +54,18 @@ This is a global CLI. It will have a phar file in the future but for now, you ca
     git clone git@github.com:jonpugh/ash.git
     sudo ln -s $PWD/ash /usr/local/bin/ash
     ```
+
+## Setup
+
+Once the `ash` command works, you need to tell it where your sites are. You can create alias files manually, or use the `site:add` command.
+
+### `ash site:add`
+
+This command makes it easy to add new global site aliases.
+
+To use, run `ash site:add` in the directory to your Drupal site. (@todo: allow adding from any directory)
+
+If your site has the file `./drush/sites/self.yml`, these aliases will be included in the global alias list.
 
 ## Configuration
 

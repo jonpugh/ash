@@ -2,12 +2,15 @@
 
 namespace Ash\Cli;
 
+use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasFileLoader;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteAlias\Util\YamlDataFileLoader;
 use Consolidation\SiteAlias\SiteSpecParser;
 use Consolidation\SiteAlias\SiteAliasName;
 use Consolidation\SiteProcess\ProcessManager;
+use Symfony\Component\Translation\Dumper\YamlFileDumper;
+use Symfony\Component\Yaml\Yaml;
 
 class AshCommands extends \Robo\Tasks
 {
@@ -38,19 +41,35 @@ class AshCommands extends \Robo\Tasks
     }
 
     /**
-     * Run a command against a site (in the root directory.)
+     * Run a command against a site (in the root directory and on the right server.)
+     * You can use the alternative syntax: ash @alias command.
      *
      * @command site:exec
      * @format yaml
      * @return array
-     * @aliases e exec ex
+     *
+     * @usage @site.local git status
+     * @usage @site.local vendor/bin/drush user:login
+     * @usage @site.local vendor/bin/drush @prod cr     # Calls `drush @prod cr` in the site root (where site local site aliases would be available.)
+     * @usage -- ls -la  # To pass a command with dashes, use -- to separate ash command from site command.
      */
     public function siteExec($alias_name, array $command_array)
     {
+        if ($this->io()->isVerbose()) {
+            $this->io()->table(['Alias', 'Command'], [
+                [$alias_name, implode(' ', $command_array)]
+            ]);
+        }
         $site_alias = $this->manager->getAlias($alias_name);
         if (empty($site_alias)) {
             throw new \Exception("No aliases found");
         }
+
+        // Set the drush URI to the site alias uri.
+        $site_alias->set('env-vars', [
+           'DRUSH_OPTIONS_URI' => $site_alias->uri(),
+           'PATH' => './vendor/bin:./bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:',
+        ]);
 
         $processManager = ProcessManager::createDefault();
         $process = $processManager->siteProcess($site_alias, $command_array);
@@ -117,17 +136,21 @@ class AshCommands extends \Robo\Tasks
         return $aliasName;
     }
 
-    protected function renderAliases($all)
+    /**
+     * @param SiteAlias[] $all An array of aliases to display.
+     */
+    protected function renderAliases(array $all)
     {
         if (empty($all)) {
             throw new \Exception("No aliases found");
         }
 
-        $result = [];
+        $rows = [];
         foreach ($all as $name => $alias) {
-            $result[$name] = $alias->export();
+            $rows[] = [$alias->name(), $alias->root(), $alias->remoteHostWithUser()];
         }
-        return $result;
+
+        $this->io()->table(['Name', 'Root', 'Host'], $rows);
     }
 
     /**
@@ -177,5 +200,47 @@ class AshCommands extends \Robo\Tasks
     {
         $parser = new SiteSpecParser();
         return $parser->parse($spec, $options['root']);
+    }
+
+    /**
+     * Add aliases to local config.
+     * @return void
+     * @aliases add
+     */
+    public function siteAdd() {
+        // If drush/sites was found, offer to add it to inventory.
+        $aliases_dir = getcwd() . '/drush/sites';
+        if (file_exists($aliases_dir)) {
+            $this->io()->info("Site aliases found in $aliases_dir.");
+            $name = $this->io()->ask('Name?', strtr(basename(getcwd()), ['.' => '']));
+
+            $alias_data = new SiteAlias();
+            $alias_data->set('root', getcwd());
+            $alias_contents = Yaml::dump(['default' => $alias_data->export()]);
+
+            $this->io->table(['Name', 'Contents'], [
+                [$name, $alias_contents]
+            ]);
+
+            $alias_dirs = $this->config['alias_directories'];
+            $choice = [];
+            foreach ($alias_dirs as $dir) {
+                $choice[] = "{$dir}/{$name}.site.yml";
+            }
+
+            $filename = $this->io()->choice('Write new alias file?', $choice, 0);
+
+            if (file_exists($filename)) {
+                $this->io()->warning("File exists at path $filename.");
+                $this->io()->confirm('Overwrite?');
+            }
+            file_put_contents($filename, $alias_contents);
+
+            $this->io()->success("Alias file written to $filename. Call 'ash @$name' to access the site");
+
+       }
+       else {
+           throw new \Exception('No drush/sites folder found. Run "ash site:add" in the root of the site.');
+       }
     }
 }

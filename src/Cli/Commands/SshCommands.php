@@ -32,7 +32,7 @@ final class SshCommands extends AshCommands
         $this->io()->note("Connecting to $alias_name via SSH...");
 
         if (empty($code)) {
-            $code[] = 'fish';
+            $code[] = 'bash';
             $code[] = '-l';
 
             // We're calling an interactive 'bash' shell, so we want to

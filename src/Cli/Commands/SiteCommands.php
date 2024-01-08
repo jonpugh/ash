@@ -47,6 +47,7 @@ class SiteCommands extends AshCommands
         $processManager = ProcessManager::createDefault();
         $process = $processManager->siteProcess($site_alias, $command_array);
         $process->setWorkingDirectory($site_alias->root());
+        $process->setTimeout(null);
 
         // @TODO: Would it be kosher to try and detect bin-path?
         // That way users could `ash @alias drush` or any other bin.

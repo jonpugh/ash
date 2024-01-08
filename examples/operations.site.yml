@@ -6,3 +6,10 @@ mars:
   root: ${env.HOME}/Work/Operations/operations/web
   uri: https://mars.lndo.site
 
+drupal:
+  root: /app
+  uri: https://drupal.local.computer
+  docker:
+    service: webserver
+    exec:
+      options: --user www-data

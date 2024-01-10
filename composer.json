@@ -2,8 +2,8 @@
     "name": "jonpugh/ash",
     "description": "Global CLI for managing sites using Consolidation Site Aliases.",
     "require": {
-        "consolidation/robo": "^4.0",
-        "consolidation/site-process": "^5.2"
+        "consolidation/robo": "^3.0||^4.0",
+        "consolidation/site-process": "^4.2||^5.2"
     },
     "license": "MIT",
     "autoload": {

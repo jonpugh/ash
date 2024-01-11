@@ -6,3 +6,12 @@ ash:
 
     # To include a project's site aliases when calling `ash` globally, add the path to drush/sites here.
     # - "${env.HOME}/projects/drupal"
+
+  # Ash command config
+  commands:
+    site:exec:
+
+      # Commands to run locally instead of via transport.
+      local_commands:
+        - docker
+        - docker-compose

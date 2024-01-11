@@ -38,6 +38,20 @@ class SiteCommands extends AshCommands
             throw new \Exception("No aliases found");
         }
 
+        // Look up if this is a local command.
+        if (in_array($command_array[0], $this->config['commands']['site:exec']['local_commands'])) {
+
+          // @TODO: Support all transports. isLocal() only looks for 'docker';
+          if (!$site_alias->isLocal()) {
+            // Remove "docker" site alias config.
+            $data = $site_alias->export();
+            unset($data['docker']);
+            $site_alias->import($data);
+
+            # Alias "root" is in the container. Set it to cwd instead?
+            $site_alias->set('root', getcwd());
+          }
+        }
         // Set the drush URI to the site alias uri.
         $site_alias->set('env-vars', [
             'DRUSH_OPTIONS_URI' => $site_alias->uri(),

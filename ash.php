@@ -65,7 +65,9 @@ $configPrefix = 'ASH';
 $configCandidates = [
     getenv($configPrefix . '_CONFIG') ?: getenv('HOME') . '/.ash/ash.yml',
     __DIR__ . '/ash.yml',
+    $cwd . '/ash.yml',
 ];
+
 foreach ($configCandidates as $candidate) {
     if (file_exists($candidate)) {
         $configFilePath = $candidate;
@@ -130,6 +132,11 @@ else {
   }
 }
 
+if (in_array('-v', $argv)) {
+  $output->writeln("Welcome the ash CLI.");
+  $output->writeln("====================");
+  $output->writeln('Config File: ' . $configFilePath);
+}
 $statusCode = $runner->execute($argv, $appName, $appVersion, $output);
 exit($statusCode);
 

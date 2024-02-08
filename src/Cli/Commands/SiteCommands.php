@@ -190,7 +190,9 @@ class SiteCommands extends AshCommands
 
             $alias_data = new SiteAlias();
             $alias_data->set('root', getcwd());
-            $alias_contents = Yaml::dump(['default' => $alias_data->export()]);
+
+            // @TODO: What should the global alias be called? Should it be configurable?
+            $alias_contents = Yaml::dump(['local' => $alias_data->export()]);
 
             $this->io->table(['Name', 'Contents'], [
                 [$name, $alias_contents]

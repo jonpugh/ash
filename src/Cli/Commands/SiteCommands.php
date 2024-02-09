@@ -54,7 +54,7 @@ class SiteCommands extends AshCommands
         }
         // Set the drush URI to the site alias uri.
         $site_alias->set('env-vars', [
-            'DRUSH_OPTIONS_URI' => $site_alias->uri(),
+            'DRUSH_OPTIONS_URI' => $site_alias->uri() ?? '',
             'PATH' => './vendor/bin:./bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:',
         ]);
 
@@ -70,7 +70,6 @@ class SiteCommands extends AshCommands
         $process->mustRun(function ($type, $buffer): void {
             echo $buffer;
         });
-        return $process->getExitCode();
     }
 
     /**

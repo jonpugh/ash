@@ -56,11 +56,25 @@ $argv = $_SERVER['argv'];
 $appName = "Alias Shell";
 $appVersion = trim(file_get_contents(__DIR__ . '/VERSION'));
 
-// @TODO: Discover commands.
-$commandClasses = [
-    \Ash\Commands\SiteCommands::class,
-    \Ash\Commands\ProvisionCommands::class,
-];
+// Load command files.
+// @TODO: Load command files from chosen alias.
+$discovery = new \Consolidation\AnnotatedCommand\CommandFileDiscovery();
+$discovery->setSearchPattern('*Commands.php');
+
+// Current directory.
+$directoryList[] = $cwd . '/ash/Commands';
+
+// Home directory
+$directoryList[] = getenv('HOME') . '/.ash/Commands';
+
+// Internal commands.
+$directoryList[] = __DIR__ . '/src/Commands';
+$commandClasses = $discovery->discover($directoryList, '\Ash\Commands');
+
+// Include all files.
+foreach ($commandClasses as $file => $class) {
+  include $file;
+}
 
 $selfUpdateRepository = 'jonpugh/ash';
 $configPrefix = 'ASH';

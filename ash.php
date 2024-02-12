@@ -58,8 +58,8 @@ $appVersion = trim(file_get_contents(__DIR__ . '/VERSION'));
 
 // @TODO: Discover commands.
 $commandClasses = [
-    \Ash\Cli\Commands\SiteCommands::class,
-    \Ash\Cli\Commands\ProvisionCommands::class,
+    \Ash\Commands\SiteCommands::class,
+    \Ash\Commands\ProvisionCommands::class,
 ];
 
 $selfUpdateRepository = 'jonpugh/ash';

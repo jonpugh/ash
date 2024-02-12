@@ -1,89 +1,74 @@
 <?php
 
 
-namespace Ash\Cli\Commands;
+namespace Ash\Commands;
 
-use Ash\Cli\AshCommands;
+use Ash\AshCommands;
 use Consolidation\SiteAlias\SiteAlias;
-use Consolidation\SiteAlias\SiteAliasName;
 use Consolidation\SiteAlias\SiteSpecParser;
 use Consolidation\SiteProcess\ProcessManager;
-use Robo\Exception\TaskException;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Yaml\Yaml;
 
-class ProvisionCommands extends AshCommands
+class SiteCommands extends AshCommands
 {
 
     /**
-     * Prepare a site codebase. Clone from git, checkout to the desired git reference, run build command.
+     * Run a command against a site (in the root directory and on the right server.)
+     * You can use the alternative syntax: ash @alias command.
      *
-     * @command site:init
-     * @aliases init
+     * @command site:exec
      * @format yaml
      * @return array
      *
-     * @usage @site.local init
+     * @usage @site.local git status
+     * @usage @site.local vendor/bin/drush user:login
+     * @usage @site.local vendor/bin/drush @prod cr     # Calls `drush @prod cr` in the site root (where site local site aliases would be available.)
+     * @usage -- ls -la  # To pass a command with dashes, use -- to separate ash command from site command.
      */
-    public function siteInit($alias_name, array $command_array)
+    public function siteExec($alias_name, array $command_array)
     {
-        $processManager = ProcessManager::createDefault();
-
+        if ($this->io()->isVerbose()) {
+            $this->io()->table(['Alias', 'Command'], [
+                [$alias_name, implode(' ', $command_array)]
+            ]);
+        }
         $site_alias = $this->manager->getAlias($alias_name);
         if (empty($site_alias)) {
             throw new \Exception("No aliases found");
         }
 
-        // Remote aliases can't work because the root may not exist.
-        if (!$site_alias->isLocal()) {
-          throw new \Exception("Alias is not local. Cannot init.");
-        }
+        // Look up if this is a local command.
+        if (in_array($command_array[0], $this->config['commands']['site:exec']['local_commands'])) {
 
-        // If the site code does not exist...
-        if (!file_exists($site_alias->root())) {
-          if (!$site_alias->has('git_remote')) {
-            throw new \Exception("Site alias has no 'git_remote' set. Cannot init.");
-          }
+          // @TODO: Support all transports. isLocal() only looks for 'docker';
+          if (!$site_alias->isLocal()) {
+            // Remove "docker" site alias config.
+            $data = $site_alias->export();
+            unset($data['docker']);
+            $site_alias->import($data);
 
-          // Clone it.
-          $this->io()->say('Site codebase not found');
-          $this->io()->confirm(strtr('Clone <comment>:git_remote</comment> to <comment>:path</comment>?', [
-            ':path' => $site_alias->root(),
-            ':git_remote' => $site_alias->get('git_remote')
-          ]));
-          $task = $this->taskGitStack()
-            ->stopOnFail()
-            ->cloneRepo($site_alias->get('git_remote'), $site_alias->root(), $site_alias->get('git_reference'))
-            ->run();
-          if (!$task->wasSuccessful()) {
-            throw new \Exception('Something went wrong when cloning the codebase.');
+            # Alias "root" is in the container. Set it to cwd instead?
+            $site_alias->set('root', getcwd());
           }
         }
+        // Set the drush URI to the site alias uri.
+        $site_alias->set('env-vars', [
+            'DRUSH_OPTIONS_URI' => $site_alias->uri() ?? '',
+            'PATH' => './vendor/bin:./bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:',
+        ]);
 
-        if (file_exists($site_alias->root())) {
-          $task = $this->taskGitStack()
-            ->stopOnFail()
-            ->dir($site_alias->root())
-            ->checkout($site_alias->get('git_reference'))
-            ->run();
-          if (!$task->wasSuccessful()) {
-            throw new \Exception('Something went wrong when cloning the codebase.');
-          }
-          else {
-            $this->io()->success('Successfully checked out git reference '. $site_alias->get('git_reference'));
-          }
+        $processManager = ProcessManager::createDefault();
+        $process = $processManager->siteProcess($site_alias, $command_array);
+        $process->setWorkingDirectory($site_alias->root());
+        $process->setTimeout(null);
+        $process->setTty($process->isTtySupported());
 
-          $this->io()->success(strtr('Site codebase found at :path', [':path' => $site_alias->root()]));
-        }
-        else {
-          throw new \Exception('Site codebase not found.');
-        }
+        // @TODO: Would it be kosher to try and detect bin-path?
+        // That way users could `ash @alias drush` or any other bin.
 
-        $task = $this->taskExecStack()
-          ->exec('git show --compact-summary')
-          ->exec('git status')
-          ->run();
-
+        $process->mustRun(function ($type, $buffer): void {
+            echo $buffer;
+        });
     }
 
     /**

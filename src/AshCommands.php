@@ -1,18 +1,12 @@
 <?php
 
-namespace Ash\Cli;
+namespace Ash;
 
-use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasFileLoader;
 use Consolidation\SiteAlias\SiteAliasManager;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
-use Consolidation\SiteAlias\SiteAliasTrait;
-use Consolidation\SiteAlias\Util\YamlDataFileLoader;
-use Consolidation\SiteAlias\SiteSpecParser;
 use Consolidation\SiteAlias\SiteAliasName;
+use Consolidation\SiteAlias\Util\YamlDataFileLoader;
 use Consolidation\SiteProcess\ProcessManager;
-use Symfony\Component\Translation\Dumper\YamlFileDumper;
-use Symfony\Component\Yaml\Yaml;
 
 class AshCommands extends \Robo\Tasks
 {

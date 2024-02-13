@@ -176,12 +176,19 @@ class SiteCommands extends AshCommands
 
     /**
      * Add aliases to local config.
+     * @option name Alias name.
+     * @option root Alias root.
      * @return void
      * @aliases add
      */
-    public function siteAdd() {
-        $name = $this->io()->ask('Name?', strtr(basename(getcwd()), ['.' => '']));
-        $root = $this->io()->ask('Root?', getcwd());
+    public function siteAdd($options = [
+      'name' => '',
+      'root' => '',
+    ]) {
+        $suggested_root = $options['root'] ?? getcwd();
+        $suggested_name = $options['name'] ?? strtr(basename($suggested_root), ['.' => '']);
+        $root = $this->io()->ask('Root?', $suggested_root);
+        $name = $this->io()->ask('Name?', $suggested_name);
 
         $alias_data = new SiteAlias();
         $alias_data->set('root', $root);

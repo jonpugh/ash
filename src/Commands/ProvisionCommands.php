@@ -4,9 +4,12 @@
 namespace Ash\Commands;
 
 use Ash\AshCommands;
+use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteSpecParser;
 use Consolidation\SiteProcess\ProcessManager;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Yaml\Yaml;
 
 class ProvisionCommands extends AshCommands
@@ -81,5 +84,24 @@ class ProvisionCommands extends AshCommands
           ->exec('git status')
           ->run();
 
+    }
+
+    /**
+     * @hook option site:add
+     */
+    public function additionalOption(Command $command, AnnotationData $annotationData)
+    {
+        $command->addOption(
+            'git_remote',
+            '',
+            InputOption::VALUE_OPTIONAL,
+            'The URL of the git remote that stores the code for this site.'
+        );
+        $command->addOption(
+            'git_reference',
+            '',
+            InputOption::VALUE_OPTIONAL,
+            'The branch or tag this site is running on.'
+        );
     }
 }

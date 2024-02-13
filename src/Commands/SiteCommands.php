@@ -214,7 +214,12 @@ class SiteCommands extends AshCommands
             $this->io()->warning("File $filename was overwritten.");
           }
         }
-        file_put_contents($filename, $alias_contents);
+        else {
+          if (file_exists($filename)) {
+            $this->io()->error("File $filename already exists.");
+            exit(1);
+          }
+        }
 
         $this->io()->success("Alias file written to $filename. Call 'ash @$name' to access the site");
     }

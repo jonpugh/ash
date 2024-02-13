@@ -208,9 +208,11 @@ class SiteCommands extends AshCommands
 
         $filename = $this->io()->choice('Write new alias file?', $choice, 0);
 
-        if (file_exists($filename)) {
-            $this->io()->warning("File exists at path $filename.");
-            $this->io()->confirm('Overwrite?');
+        if (!file_exists($filename) || file_exists($filename) && $this->io()->confirm("File exists at path $filename. Overwrite?")) {
+          file_put_contents($filename, $alias_contents);
+          if (file_exists($filename)) {
+            $this->io()->warning("File $filename was overwritten.");
+          }
         }
         file_put_contents($filename, $alias_contents);
 

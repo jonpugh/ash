@@ -181,8 +181,8 @@ class SiteCommands extends AshCommands
      */
     public function siteAdd() {
         // If drush/sites was found, offer to add it to inventory.
-        $aliases_dir = getcwd() . '/drush/sites';
-        if (file_exists($aliases_dir)) {
+//        $aliases_dir = getcwd() . '/drush/sites';
+//        if (file_exists($aliases_dir)) {
             $this->io()->info("Site aliases found in $aliases_dir.");
             $name = $this->io()->ask('Name?', strtr(basename(getcwd()), ['.' => '']));
 
@@ -212,9 +212,9 @@ class SiteCommands extends AshCommands
 
             $this->io()->success("Alias file written to $filename. Call 'ash @$name' to access the site");
 
-        }
-        else {
-            throw new \Exception('No drush/sites folder found. Run "ash site:add" in the root of the site.');
-        }
+//        }
+//        else {
+//            throw new \Exception('No drush/sites folder found. Run "ash site:add" in the root of the site.');
+//        }
     }
 }

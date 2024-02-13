@@ -180,11 +180,11 @@ class SiteCommands extends AshCommands
      * @aliases add
      */
     public function siteAdd() {
-        $this->io()->info("Site aliases found in $aliases_dir.");
         $name = $this->io()->ask('Name?', strtr(basename(getcwd()), ['.' => '']));
+        $root = $this->io()->ask('Root?', getcwd());
 
         $alias_data = new SiteAlias();
-        $alias_data->set('root', getcwd());
+        $alias_data->set('root', $root);
 
         // @TODO: What should the global alias be called? Should it be configurable?
         $alias_contents = Yaml::dump(['local' => $alias_data->export()]);

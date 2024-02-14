@@ -119,10 +119,11 @@ class SiteCommands extends AshCommands
 
         $rows = [];
         foreach ($all as $name => $alias) {
-          $rows[] = [$alias->name(), $alias->uri(), $alias->root(), $alias->remoteHostWithUser()];
+          $location = $alias->remoteHostWithUser()? $alias->remoteHostWithUser() . ':' . $alias->root(): $alias->root();
+          $rows[] = [$alias->name(), $alias->uri(), $location];
         }
 
-        $this->io()->table(['Name', 'URI', 'Root', 'Host'], $rows);
+        $this->io()->table(['Name', 'URI', 'Location'], $rows);
     }
 
     /**

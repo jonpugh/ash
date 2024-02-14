@@ -120,7 +120,10 @@ class SiteCommands extends AshCommands
         $rows = [];
         foreach ($all as $name => $alias) {
           $location = $alias->remoteHostWithUser()? $alias->remoteHostWithUser() . ':' . $alias->root(): $alias->root();
-          $rows[] = [$alias->name(), $alias->uri(), $location];
+
+          // @TODO: Is there a cleaner way to get the alias without the prefix?
+          $name = str_replace('ash.', '', $alias->name());
+          $rows[] = [$name, $alias->uri(), $location];
         }
 
         $this->io()->table(['Name', 'URI', 'Location'], $rows);

@@ -35,25 +35,63 @@ It was inspired by the need to retire global drush.
 
 ## Installation
 
-This is a global CLI. It will have a phar file in the future but for now, you can install one of 2 ways:
+Ash is a CLI designed to run globally, but can be installed in a composer project as well. Here are 3 options for installing:
 
-1. Global Require.
+1. Site local `composer require`
 
-    ```
-    composer global require jonpugh/ash
-    ```
-   Then add COMPOSER_HOME to your path.
+        composer require jonpugh/ash`
 
-    ```
-    export PATH="$HOME/.config/composer:$PATH"
-    ```
+2. Composer Global require command and add to PATH:
+
+    1. Run the following command to install `ash` to your user's global composer directory:
+
+            composer global require jonpugh/ash
+
+    2. To make `ash` available globally, set the PATH variable:
+
+            export PATH="~/$COMPOSER_HOME/vendor/bin:$PATH"
+
+       Put this in your `~/.bashrc` or similar file.
+
+    Notes:       
+
+    - This will install a `composer.json` file to the global `COMPOSER_HOME` directory.
+    - The bin scripts will be installed in `$COMPOSER_HOME/vendor/bin`.
+    - Your `COMPOSER_HOME` may vary. Refer to the `composer global --help` command for more information about `COMPOSER_HOME`.
+
+    - From `composer global --help`:
+        
+        ```` 
+        You can use this to install CLI utilities globally, all you need
+        is to add the COMPOSER_HOME/vendor/bin dir to your PATH env var.
+        
+        COMPOSER_HOME is c:\Users<user>\AppData\Roaming\Composer on Windows
+        and /home/<user>/.composer on unix systems.
+        
+        If your system uses freedesktop.org standards, then it will first check
+        XDG_CONFIG_HOME or default to /home/<user>/.config/composer
+        
+        Note: This path may vary depending on customizations to bin-dir in
+        composer.json or the environmental variable COMPOSER_BIN_DIR.
+        
+        Read more at https://getcomposer.org/doc/03-cli.md#global
+        ```
 
 2. Source install.
 
+    For development, install the source, and if desired, set a symlink to make `ash` available globally.    
+
     ```
     git clone git@github.com:jonpugh/ash.git
+    cd ash
+    composer install
     sudo ln -s $PWD/ash /usr/local/bin/ash
     ```
+
+3. Phar install.
+
+    Coming Soon.
+
 
 ## Setup
 

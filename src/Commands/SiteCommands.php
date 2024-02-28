@@ -38,7 +38,7 @@ class SiteCommands extends AshCommands
         }
 
         // Look up if this is a local command.
-        if (in_array($command_array[0], $this->config['commands']['site:exec']['local_commands'])) {
+        if (isset($command_array[0]) && in_array($command_array[0], $this->config['commands']['site:exec']['local_commands'])) {
 
           // @TODO: Support all transports. isLocal() only looks for 'docker';
           if (!$site_alias->isLocal()) {

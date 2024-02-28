@@ -123,7 +123,12 @@ class SiteCommands extends AshCommands
 
           // @TODO: Is there a cleaner way to get the alias without the prefix?
           $name = str_replace('ash.', '', $alias->name());
-          $rows[] = [$name, $alias->uri(), $location];
+
+          $row = [$name, $alias->uri(), $location];
+          if ($this->output()->isVerbose()) {
+//            $row[] = $alias->();
+          }
+          $rows[] = $row;
         }
 
         $this->io()->table(['Name', 'URI', 'Location'], $rows);
@@ -189,8 +194,8 @@ class SiteCommands extends AshCommands
       'name' => '',
       'root' => '',
     ]) {
-        $suggested_root = $options['root'] ?? getcwd();
-        $suggested_name = $options['name'] ?? strtr(basename($suggested_root), ['.' => '']);
+        $suggested_root = $options['root'] ?: getcwd();
+        $suggested_name = $options['name'] ?: strtr(basename($suggested_root), ['.' => '']);
         $root = $this->io()->ask('Root?', $suggested_root);
         $name = $this->io()->ask('Name?', $suggested_name);
 

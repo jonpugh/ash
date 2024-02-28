@@ -212,20 +212,28 @@ class SiteCommands extends AshCommands
         $alias_dirs = $this->config['alias_directories'];
         $choice = [];
         foreach ($alias_dirs as $dir) {
+            if (!file_exists($dir)) {
+              if ($this->io()->confirm("Alias directory <comment>$dir</comment> does not exist. Create it?")) {
+                mkdir($dir);
+              }
+
+            }
             $choice[] = "{$dir}/{$name}.site.yml";
         }
 
-        $filename = $this->io()->choice('Write new alias file?', $choice, 0);
+        $filename = $this->io()->choice('Alias file location?', $choice, 0);
 
-        if (!file_exists($filename) || file_exists($filename) && $this->io()->confirm("File exists at path $filename. Overwrite?")) {
+
+        $file_existed = file_exists($filename);
+        if (!$file_existed || $file_existed && $this->io()->confirm("File exists at path <comment>$filename</comment>. Overwrite?")) {
           file_put_contents($filename, $alias_contents);
-          if (file_exists($filename)) {
+          if ($file_existed) {
             $this->io()->warning("File $filename was overwritten.");
           }
         }
         else {
           if (file_exists($filename)) {
-            $this->io()->error("File $filename already exists.");
+            $this->io()->error("File $filename already exists. Not overwritting.");
             exit(1);
           }
         }

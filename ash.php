@@ -152,6 +152,9 @@ if (in_array('-v', $argv)) {
   $output->writeln("Welcome the ash CLI.");
   $output->writeln("====================");
   $output->writeln('Config File: ' . $configFilePath);
+  $output->writeln('Command Directories: ');
+  $output->writeln($directoryList);
+  $output->writeln("====================");
 }
 $statusCode = $runner->execute($argv, $appName, $appVersion, $output);
 exit($statusCode);
